@@ -131,6 +131,12 @@
         android:layout_height="wrap_content"
         android:prompt="@string/spinner" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Year of study"
+        android:layout_marginTop="10dp"
+        />
     <RadioGroup
         android:layout_marginTop="10dp"
         android:id="@+id/radioGroupYear"
@@ -175,7 +181,7 @@
         android:layout_height="wrap_content"
         android:text="SEND"
         android:background="@color/colorPrimary"
-       
+
         />
 
 
