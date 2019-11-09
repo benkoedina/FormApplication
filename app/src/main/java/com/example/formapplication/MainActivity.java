@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,20 +16,28 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    // private static final int CAMERA_REQUEST = 1888;
-    //private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    private ImageView show_im;//=(ImageView)findViewById(R.id.iv_image);
-   // protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
-    //static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private ImageView show_im;
+    private RadioGroup radioSexGroup;
+    private RadioButton radioSexButton;
+  //  private Button btnDisplay;
+
     public  static final int RequestPermissionCode  = 1 ;
 
     @Override
@@ -51,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
-        /* ImageView*/
+
         show_im = (ImageView) findViewById(R.id.iv_image);
         Button bt_photo = (Button) findViewById(R.id.bt_photo);
 
@@ -66,9 +75,104 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
- 
+
+        Button bt_date = (Button)findViewById(R.id.bt_date);
+        TextView tv_date = (TextView)findViewById(R.id.tv_date);
+
+        bt_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                        TextView birthDate = (TextView)findViewById(R.id.tv_date);
+                        birthDate.setText(day + "/" + month + "/" + year);
+                        Toast.makeText(MainActivity.this,"You set the date!", Toast.LENGTH_LONG).show();
+
+                    }
+                }, year, month, dayOfMonth);
+
+                datePickerDialog.show();
+
+            }
+        });
+
+        final RadioGroup radioGroup = findViewById(R.id.radioGroup);
+
+        if (radioGroup != null) {
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    String text = "You selected: ";
+                    text += (R.id.radioMale == checkedId) ? "male" : "female";
+                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        final CheckBox checkBox = findViewById(R.id.chB_hobby);
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkBox.isChecked())
+                {
+                    Toast.makeText(getApplicationContext(), "I have hobbies", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Spinner spinner_dep = findViewById(R.id.spinner_department);
+        spinner_dep.setOnItemSelectedListener(this);
+
+        List<String> departments = new ArrayList<>();
+        departments.add("Informatika");
+        departments.add("Számitástechnika");
+        departments.add("Gépészmérnöki");
+        departments.add("Mechatronika");
+
+        ArrayAdapter<String> dataAdapterDepartment = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, departments);
+        dataAdapterDepartment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_dep.setAdapter(dataAdapterDepartment);
+
+        final RadioGroup radioGroupYear = findViewById(R.id.radioGroupYear);
+        final RadioButton radio1 = findViewById(R.id.radio1);
+
+        if (radioGroupYear != null) {
+            radioGroupYear.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    String text = "You selected: ";
+                    if(radio1.isChecked())
+                    {
+                        text+="1";
+                        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                    }
+                    if(R.id.radio2 == checkedId)
+                    {
+                        text+="2";
+                        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                    }
+                    if(R.id.radio3 == checkedId)
+                    {
+                        text+="3";
+                        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        }
 
     }
+
+
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -82,17 +186,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-   /* protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                show_im.setImageBitmap(imageBitmap);
 
-            }
-        }
-    }*/
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -139,14 +233,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
     }
-  /*  @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data );
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            show_im.setImageBitmap(imageBitmap);
 
-        }
-    }*/
 }
